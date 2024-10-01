@@ -163,7 +163,13 @@ export const parseMessage = (message: Message, messageId: string, config: Config
     }
 
     if (message.type === 'at') return segment.at(message.data);
-    if (message.type === 'reply') return h('', {}, [h('quote', { id: messageId }), segment.text(message.data)]);
+    //if (message.type === 'reply') return h('', {}, [h('quote', { id: messageId }), segment.text(message.data)]);    
+    // 这里回复有问题，会发`1022493102 + 消息原本内容`，也就是说消息ID变成文字了
+    // 修改后的回复逻辑  好像也不会回复诶？
+    //logger.info(message)
+    if (message.type === 'reply') {
+        return h('quote', { id: messageId }, segment.text(message.data));
+    }
     if (message.type === 'file') {
         const [name, file] = message.data.split('|');
         const id = randomUUID();
